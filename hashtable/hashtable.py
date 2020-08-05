@@ -37,6 +37,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return len(self.storage)
 
 
     def get_load_factor(self):
@@ -91,24 +92,30 @@ class HashTable:
         # index = self.hash_index(key)
         # self.storage[index] = (key, value)
      #Day 2
+    
         index = self.hash_index(key)
         node = self.storage[index]
-
-        if node is None: 
-            self.storage[index] = HashTableEntry(key,value)
+    
+        if node is None:
+            self.storage[index] = HashTableEntry(key, value)
+            self.size += 1
+            if self.get_load_factor() > 0.7:
+                self.resize(self.capacity *2)
             return
-        prev = node
-
-        while node is not None and node.key != key:
+        
+        prev = None
+        
+        while node is not None:
             prev = node
             node = node.next
-
-        if prev.key == key: 
-            prev.value = value
-            return
-        else:
-            prev.next = HashTableEntry(key,value)
-
+            if prev.key == key:
+                prev.value = value
+                return
+            
+        prev.next = HashTableEntry(key, value)
+        self.size += 1
+        if self.get_load_factor() > 0.7:
+                self.resize(self.capacity *2)
 
 
         # Your code here
@@ -185,13 +192,16 @@ class HashTable:
         new_capacity = [None]*self.capacity
         self.storage = new_capacity
 
-        self.size =0 
+        self.size = 0 
 
         for i in old_capacity:
             cur_node = i
             while cur_node is not None: 
                 self.put(cur_node.key,cur_node.value)
                 cur_node = cur_node.next
+
+
+                #update size variable accordingly and actually use function in appropriate area. 
 
         # Your code here
 
