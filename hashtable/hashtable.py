@@ -63,10 +63,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        hash = 5381
+        hash_var = 5381
         for c in key:
-            hash = (hash * 33) + ord(c)
-        return hash % self.capacity
+            hash_var = (hash_var * 33) + ord(c)
+        return hash_var 
 
     def hash_index(self, key):
         """
@@ -84,9 +84,32 @@ class HashTable:
 
         Implement this.
         """
+        
+        # index = self.hash_index(key)
+        # self.storage[index] = (key, value)
+     #Day 2
         index = self.hash_index(key)
-        self.storage[index] = (key, value)
+        node = self.storage[index]
+
+        if node is None: 
+            self.storage[index] = HashTableEntry(key,value)
+            return
+        prev = node
+
+        while node is not None and node.key != key:
+            prev = node
+            node = node.next
+
+        if prev.key == key: 
+            prev.value = value
+            return
+        else:
+            prev.next = HashTableEntry(key,value)
+
+
+
         # Your code here
+        
 
 
     def delete(self, key):
@@ -97,9 +120,25 @@ class HashTable:
 
         Implement this.
         """
-        index = self.hash_index(key)
-        self.storage[index] = None
+        # index = self.hash_index(key)
+        # self.storage[index] = None
         # Your code here
+
+    #Day2
+        index = self.hash_index(key)
+        node = self.storage[index]
+        prev= None
+        while node is not None and node.key != key:
+            prev = node
+            node = node.next
+        if node is None: 
+            return 'No key found - sorry'
+        else:
+            if prev is None: 
+                self.storage[index] = node.next
+            else:
+                prev.next = node.next
+
 
 
     def get(self, key):
@@ -110,12 +149,24 @@ class HashTable:
 
         Implement this.
         """
-        index = self.hash_index(key)
-        if self.storage[index] is not None:
-            return self.storage[index][1]
-        else:
-            return None
+        # index = self.hash_index(key)
+        # if self.storage[index] is not None:
+        #     return self.storage[index][1]
+        # else:
+        #     return None
         # Your code here
+        #Day2
+        index = self.hash_index(key)
+        node = self.storage[index]
+
+        if self.storage[index] is None:
+            return None
+        while node is not None and key != node.key:
+            node = node.next
+        if node is None:
+            return None
+        return node.value 
+
 
 
     def resize(self, new_capacity):
