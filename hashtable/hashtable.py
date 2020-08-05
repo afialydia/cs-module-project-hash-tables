@@ -20,9 +20,11 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
-        # Your code here
-
+    def __init__(self, storage):
+        # creating an array with nones
+        self.storage = [None] * storage
+        self.capacity = len(self.storage)
+        self.size = 0
 
     def get_num_slots(self):
         """
@@ -35,6 +37,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return len(self.storage)
 
 
     def get_load_factor(self):
@@ -43,6 +46,8 @@ class HashTable:
 
         Implement this.
         """
+
+        return self.size/self.capacity
         # Your code here
 
 
@@ -62,8 +67,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
-
+        hash_var = 5381
+        for c in key:
+            hash_var = (hash_var * 33) + ord(c)
+        return hash_var 
 
     def hash_index(self, key):
         """
@@ -81,7 +88,38 @@ class HashTable:
 
         Implement this.
         """
+        
+        # index = self.hash_index(key)
+        # self.storage[index] = (key, value)
+     #Day 2
+    
+        index = self.hash_index(key)
+        node = self.storage[index]
+    
+        if node is None:
+            self.storage[index] = HashTableEntry(key, value)
+            self.size += 1
+            if self.get_load_factor() > 0.7:
+                self.resize(self.capacity *2)
+            return
+        
+        prev = None
+        
+        while node is not None:
+            prev = node
+            node = node.next
+            if prev.key == key:
+                prev.value = value
+                return
+            
+        prev.next = HashTableEntry(key, value)
+        self.size += 1
+        if self.get_load_factor() > 0.7:
+                self.resize(self.capacity *2)
+
+
         # Your code here
+        
 
 
     def delete(self, key):
@@ -92,7 +130,25 @@ class HashTable:
 
         Implement this.
         """
+        # index = self.hash_index(key)
+        # self.storage[index] = None
         # Your code here
+
+    #Day2
+        index = self.hash_index(key)
+        node = self.storage[index]
+        prev= None
+        while node is not None and node.key != key:
+            prev = node
+            node = node.next
+        if node is None: 
+            return 'No key found - sorry'
+        else:
+            if prev is None: 
+                self.storage[index] = node.next
+            else:
+                prev.next = node.next
+
 
 
     def get(self, key):
@@ -103,16 +159,50 @@ class HashTable:
 
         Implement this.
         """
+        # index = self.hash_index(key)
+        # if self.storage[index] is not None:
+        #     return self.storage[index][1]
+        # else:
+        #     return None
         # Your code here
+        #Day2
+        index = self.hash_index(key)
+        node = self.storage[index]
+
+        if self.storage[index] is None:
+            return None
+        while node is not None and key != node.key:
+            node = node.next
+        if node is None:
+            return None
+        return node.value 
 
 
-    def resize(self, new_capacity):
+
+    def resize(self, value):
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
 
         Implement this.
         """
+
+        old_capacity = self.storage
+        self.capacity = value 
+        new_capacity = [None]*self.capacity
+        self.storage = new_capacity
+
+        self.size = 0 
+
+        for i in old_capacity:
+            cur_node = i
+            while cur_node is not None: 
+                self.put(cur_node.key,cur_node.value)
+                cur_node = cur_node.next
+
+
+                #update size variable accordingly and actually use function in appropriate area. 
+
         # Your code here
 
 
