@@ -24,6 +24,7 @@ class HashTable:
         # creating an array with nones
         self.storage = [None] * storage
         self.capacity = len(self.storage)
+        self.size = 0
 
     def get_num_slots(self):
         """
@@ -44,6 +45,8 @@ class HashTable:
 
         Implement this.
         """
+
+        return self.size/self.capacity
         # Your code here
 
 
@@ -169,13 +172,27 @@ class HashTable:
 
 
 
-    def resize(self, new_capacity):
+    def resize(self, value):
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
 
         Implement this.
         """
+
+        old_capacity = self.storage
+        self.capacity = value 
+        new_capacity = [None]*self.capacity
+        self.storage = new_capacity
+
+        self.size =0 
+
+        for i in old_capacity:
+            cur_node = i
+            while cur_node is not None: 
+                self.put(cur_node.key,cur_node.value)
+                cur_node = cur_node.next
+
         # Your code here
 
 
